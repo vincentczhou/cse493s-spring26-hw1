@@ -12,3 +12,8 @@ dependencies = [
     "torchvision>=0.26.0",
     "transformers>=5.5.4",
 ]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.0",
+]
