@@ -16,13 +16,13 @@ BOS_IDX = 2
 EOS_IDX = 3
 
 
-def load_config(config_path: Path) -> GPTConfig:
+def load_config(config_path: Path) -> tuple[dict, GPTConfig]:
     c = GPTConfig()
     with open(config_path, "r") as f:
         config_dict = yaml.safe_load(f)
     for key, value in config_dict["gptconfig"].items():
         setattr(c, key, value)
-    return c
+    return config_dict, c
 
 
 def load_data(data_path: Path) -> list[str]:
@@ -63,6 +63,7 @@ def tokenize(data: list[str], token_to_index: dict[str, int]) -> list[int]:
         token_indices = [
             token_to_index.get(token, token_to_index[UNK]) for token in tokens
         ]
+        token_indices = [token_to_index[BOS]] + token_indices + [token_to_index[EOS]]
         tokenized_data.append(token_indices)
     return tokenized_data
 
