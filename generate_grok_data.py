@@ -32,7 +32,7 @@ def split_and_save(data: list[str], output_dir: Path, name: str, train_frac: flo
     print(f"{name}: {len(train)} train, {len(test)} test")
 
 
-@hydra.main(config_path="conf/data", config_name="generate_data", version_base=None)
+@hydra.main(config_path="conf/data", config_name="1.1_generate_data", version_base=None)
 def main(cfg: DictConfig):
     random.seed(cfg.seed)
     output_dir = Path(cfg.output_dir)

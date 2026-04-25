@@ -1,5 +1,5 @@
 general:
-  name: sanity_check
+  name: 0.1_sanity_check
   device: cuda # or cpu
   seed: 493
 
