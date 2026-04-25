@@ -34,13 +34,13 @@ uv run train.py --config-name=<config>
 For example, to run the sanity check:
 
 ```bash
-uv run train.py --config-name=sanitycheck
+uv run train.py --config-name=0.1_sanitycheck_01
 ```
 
 Individual config values can be overridden from the command line:
 
 ```bash
-uv run train.py --config-name=sanitycheck gptconfig.n_layer=2 training.lr=1e-3
+uv run train.py --config-name=0.1_sanitycheck_01 gptconfig.n_layer=2 training.lr=1e-3
 ```
 
 Outputs (checkpoints, logs, configs) are saved to `outputs/<run_name>/<timestamp>/`. Metrics are logged to WandB.

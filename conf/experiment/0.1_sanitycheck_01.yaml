@@ -1,5 +1,5 @@
 general:
-  name: 0.1_sanity_check
+  name: ${hydra:job.config_name}
   device: cuda # or cpu
   seed: 493
 
@@ -13,10 +13,10 @@ data:
 
 training:
   batch_size: 1
-  max_steps: 2000
+  max_steps: 150
   last_token_only: false
-  log_interval: 100
-  eval_interval: 100
+  log_interval: 1
+  eval_interval: 1
   save_interval: 500
   lr: 3e-4
   weight_decay: 0.1
