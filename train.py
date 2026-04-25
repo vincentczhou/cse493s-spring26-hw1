@@ -12,7 +12,7 @@ from model import GPT, GPTConfig
 from utils import TextDataset, Tokenizer, load_data
 
 
-@hydra.main(config_path="conf", version_base=None)
+@hydra.main(config_path="conf/experiment", version_base=None)
 def train(cfg: DictConfig) -> None:
     torch.manual_seed(cfg.general.seed)
 
