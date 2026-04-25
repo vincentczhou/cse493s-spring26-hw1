@@ -17,9 +17,9 @@ def generate(p: int, operator: str) -> list[str]:
             for b in range(p + 1):
                 data.append(f"{a} - {b} = {(a - b) % p}")
     elif operator == "/":
-        for b in range(1, p + 1):
-            for c in range(p + 1):
-                a = (b * c) % p
+        for a in range(p + 1):
+            for b in range(1, p):
+                c = (a * pow(b, -1, p)) % p
                 data.append(f"{a} / {b} = {c}")
     return data
 

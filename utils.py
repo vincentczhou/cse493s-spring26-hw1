@@ -30,6 +30,7 @@ class Tokenizer:
             unique_tokens.update(tokens)
 
         # TODO: Limit the vocabulary size, this should be done more intelligently in practice (e.g., by frequency), but for simplicity, we'll just take the first `vocab_size` tokens because for the task datasets our vocab size will never be that big.
+        # It's important that the vocab size specified in the config is larger than the actual number of unique tokens in the data (given our task), otherwise we might end up with a smaller vocab size than expected after truncation, which can cause issues during training.
         if len(unique_tokens) > vocab_size:
             unique_tokens = set(list(unique_tokens)[:vocab_size])
 
