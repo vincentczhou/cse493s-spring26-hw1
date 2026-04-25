@@ -2,9 +2,8 @@ from pathlib import Path
 
 import torch
 from torch.utils.data import Dataset
-import yaml
+# import yaml
 
-from model import GPTConfig
 
 UNK = "<UNK>"
 PAD = "<PAD>"
@@ -16,13 +15,13 @@ BOS_IDX = 2
 EOS_IDX = 3
 
 
-def load_config(config_path: Path) -> tuple[dict, GPTConfig]:
-    c = GPTConfig()
-    with open(config_path, "r") as f:
-        config_dict = yaml.safe_load(f)
-    for key, value in config_dict["gptconfig"].items():
-        setattr(c, key, value)
-    return config_dict, c
+# def load_config(config_path: Path) -> tuple[dict, GPTConfig]:
+#     c = GPTConfig()
+#     with open(config_path, "r") as f:
+#         config_dict = yaml.safe_load(f)
+#     for key, value in config_dict["gptconfig"].items():
+#         setattr(c, key, value)
+#     return config_dict, c
 
 
 def load_data(data_path: Path) -> list[str]:
@@ -40,7 +39,7 @@ def train_word_tokenizer(data: list[str], vocab_size: int) -> dict[str, int]:
         tokens = line.split()  # Split by whitespace
         unique_tokens.update(tokens)
 
-    # Limit the vocabulary size
+    # TODO: Limit the vocabulary size, this should be done more intelligently in practice (e.g., by frequency), but for simplicity, we'll just take the first `vocab_size` tokens because for the task datasets our vocab size will never be that big.
     if len(unique_tokens) > vocab_size:
         unique_tokens = set(list(unique_tokens)[:vocab_size])
 
