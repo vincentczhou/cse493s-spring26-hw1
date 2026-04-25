@@ -77,7 +77,12 @@ class TextDataset(Dataset):
         x = tokens[:-1]
         y = tokens[1:].clone()
         if self.last_token_only:
-            y[:-1] = -100
+            y[
+                :-2
+            ] = (
+                -100
+            )  # the last token is EOS, the token of interest is the one before EOS
+            y[-1] = -100  # mask EOS
         return x, y
 
     def collate_fn(batch):
