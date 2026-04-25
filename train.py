@@ -9,7 +9,7 @@ from tqdm import tqdm
 import wandb
 
 from model import GPT, GPTConfig
-from utils import TextDataset, load_data, train_word_tokenizer
+from utils import TextDataset, Tokenizer, load_data
 
 
 @hydra.main(config_path="conf", version_base=None)
@@ -28,10 +28,14 @@ def train(cfg: DictConfig) -> None:
     # Load data
     train_data = load_data(cfg.data.train_data_path)
     val_data = load_data(cfg.data.val_data_path)
-    word_tokenizer = train_word_tokenizer(train_data, gptconfig.vocab_size)
-    gptconfig.vocab_size = len(word_tokenizer)
-    train_ds = TextDataset(train_data, word_tokenizer)
-    val_ds = TextDataset(val_data, word_tokenizer)
+    tokenizer = Tokenizer(train_data, gptconfig.vocab_size)
+    gptconfig.vocab_size = len(tokenizer)
+    train_ds = TextDataset(
+        train_data, tokenizer, last_token_only=cfg.training.last_token_only
+    )
+    val_ds = TextDataset(
+        val_data, tokenizer, last_token_only=cfg.training.last_token_only
+    )
     train_loader = torch.utils.data.DataLoader(
         train_ds,
         batch_size=cfg.training.batch_size,
@@ -115,7 +119,7 @@ def train(cfg: DictConfig) -> None:
                 torch.save(
                     {
                         "model": model.state_dict(),
-                        "tokenizer": word_tokenizer,
+                        "tokenizer": tokenizer,
                         "config": OmegaConf.to_container(cfg, resolve=True),
                         "step": step,
                     },
@@ -128,7 +132,7 @@ def train(cfg: DictConfig) -> None:
     torch.save(
         {
             "model": model.state_dict(),
-            "tokenizer": word_tokenizer,
+            "tokenizer": tokenizer,
             "config": OmegaConf.to_container(cfg, resolve=True),
             "step": step,
         },
