@@ -43,7 +43,7 @@ Individual config values can be overridden from the command line:
 uv run train.py --config-name=sanitycheck gptconfig.n_layer=2 training.lr=1e-3
 ```
 
-Outputs (checkpoints, logs) are saved to `outputs/<run_name>/<timestamp>/`. Metrics are logged to WandB.
+Outputs (checkpoints, logs, configs) are saved to `outputs/<run_name>/<timestamp>/`. Metrics are logged to WandB.
 
 <!-- # Advanced ML HW 1
 
