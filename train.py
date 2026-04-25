@@ -62,8 +62,10 @@ def train(cfg: DictConfig) -> None:
 
     # Training loop
     step = 0
+    train_loss, train_acc, val_loss, val_acc = None, None, None, None
+    done = False
     pbar = tqdm(total=cfg.training.max_steps, desc="training")
-    while step < cfg.training.max_steps:
+    while step < cfg.training.max_steps and not done:
         for x, y in train_loader:
             if step >= cfg.training.max_steps:
                 break
@@ -84,13 +86,17 @@ def train(cfg: DictConfig) -> None:
                 preds = logits.argmax(dim=-1)
                 mask = y != -100
                 train_acc = (preds[mask] == y[mask]).float().mean().item()
+                train_loss = loss.item()
                 pbar.set_postfix(
-                    {"loss": f"{loss.item():.4f}", "acc": f"{train_acc:.4f}"}
+                    {
+                        "loss": train_loss,
+                        "acc": train_acc,
+                        "v_loss": val_loss,
+                        "v_acc": val_acc,
+                    }
                 )
                 # Reporting train/loss and train/acc per STEP, not per epoch
-                wandb.log(
-                    {"train/loss": loss.item(), "train/acc": train_acc}, step=step
-                )
+                wandb.log({"train/loss": train_loss, "train/acc": train_acc}, step=step)
             if step % cfg.training.eval_interval == 0:
                 model.eval()
                 with torch.no_grad():
@@ -112,8 +118,10 @@ def train(cfg: DictConfig) -> None:
                         val_total += vmask.sum().item()
                     val_loss = val_loss / len(val_loader)
                     val_acc = val_correct / val_total
-                # Reporting val/loss and val/acc per val epoch, not per step
                 wandb.log({"val/loss": val_loss, "val/acc": val_acc}, step=step)
+                if val_acc >= 1.0:
+                    done = True
+                    break
 
             if step % cfg.training.save_interval == 0:
                 ckpt_dir = Path(HydraConfig.get().runtime.output_dir) / "checkpoints"
