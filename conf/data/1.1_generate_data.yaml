@@ -1,9 +1,9 @@
 ps: [97, 113]
 operators: ["+", "-", "/"]
-train_frac: 0.5
+train_frac: 0.4
 seed: 42
-output_dir: data/1.1_grok_data_0.5_42
+output_dir: data/1.1_grok_data_0.4_42
 
 hydra:
   run:
-    dir: outputs/${hydra.job.name}/${now:%Y-%m-%d_%H-%M-%S}
+    dir: outputs/data/${hydra.job.name}/${now:%Y-%m-%d_%H-%M-%S}
