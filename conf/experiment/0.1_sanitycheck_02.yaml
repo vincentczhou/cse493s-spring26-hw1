@@ -15,7 +15,6 @@ training:
   batch_size: 1
   max_steps: 150
   last_token_only: true
-  log_interval: 1
   eval_interval: 1
   save_interval: 500
   lr: 3e-4

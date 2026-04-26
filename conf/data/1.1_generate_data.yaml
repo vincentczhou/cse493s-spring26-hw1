@@ -2,7 +2,7 @@ ps: [97, 113]
 operators: ["+", "-", "/"]
 train_frac: 0.5
 seed: 42
-output_dir: data/1.1_grok_data
+output_dir: data/1.1_grok_data_0.5_42
 
 hydra:
   run:
