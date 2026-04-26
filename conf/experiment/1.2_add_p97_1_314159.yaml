@@ -13,7 +13,8 @@ data:
 
 training:
   batch_size: 512
-  max_steps: 100000 # 10^5
+  # max_steps: 100000 # 10^5
+  max_steps: 20000 # 10^5
   last_token_only: true
   eval_interval: 10
   save_interval: 1000

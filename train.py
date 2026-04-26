@@ -51,6 +51,7 @@ def train(cfg: DictConfig) -> None:
         batch_size=cfg.training.batch_size,
         shuffle=True,
         collate_fn=TextDataset.collate_fn,
+        generator=torch.Generator().manual_seed(cfg.general.seed),
     )
     val_loader = torch.utils.data.DataLoader(
         val_ds,
