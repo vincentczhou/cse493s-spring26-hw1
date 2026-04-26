@@ -1,0 +1,35 @@
+general:
+  name: ${hydra:job.config_name}
+  device: cuda # or cpu
+  seed: 493
+
+hydra:
+  run:
+    dir: outputs/experiment/${general.name}/${now:%Y-%m-%d_%H-%M-%S}
+
+data:
+  train_data_path: data/1.1_grok_data_0.5_42/sub_p113_train.txt
+  val_data_path: data/1.1_grok_data_0.5_42/sub_p113_test.txt
+
+training:
+  batch_size: 512
+  max_steps: 100000 # 10^5
+  last_token_only: true
+  eval_interval: 10
+  save_interval: 1000
+  lr: 1e-3
+  weight_decay: 0
+  betas: [0.9, 0.98]
+
+gptconfig:
+  block_size: 8
+  vocab_size: 16384  # overridden at runtime by tokenizer size
+  n_layer: 1
+  n_head: 4
+  n_embd: 128
+  dropout: 0.0
+  bias: false
+
+wandb:
+  project: cse493s-hw1
+  run_name: ${general.name}
