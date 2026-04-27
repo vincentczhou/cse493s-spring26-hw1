@@ -25,6 +25,7 @@ def train(cfg: DictConfig) -> None:
             handler.setLevel(logging.WARNING)
 
     torch.manual_seed(cfg.general.seed)
+    torch.cuda.manual_seed_all(cfg.general.seed)
 
     wandb.init(
         project=cfg.wandb.project,

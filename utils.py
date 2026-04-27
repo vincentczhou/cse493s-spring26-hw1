@@ -31,13 +31,14 @@ class Tokenizer:
 
         # TODO: Limit the vocabulary size, this should be done more intelligently in practice (e.g., by frequency), but for simplicity, we'll just take the first `vocab_size` tokens because for the task datasets our vocab size will never be that big.
         # It's important that the vocab size specified in the config is larger than the actual number of unique tokens in the data (given our task), otherwise we might end up with a smaller vocab size than expected after truncation, which can cause issues during training.
-        if len(unique_tokens) > vocab_size:
-            unique_tokens = set(list(unique_tokens)[:vocab_size])
+        sorted_tokens = sorted(unique_tokens)
+        if len(sorted_tokens) > vocab_size:
+            sorted_tokens = sorted_tokens[:vocab_size]
 
         # Create a token to index mapping
         # Start indexing from 4 to reserve 0-3 for special tokens
         self.token_to_index = {
-            token: idx for idx, token in enumerate(unique_tokens, start=4)
+            token: idx for idx, token in enumerate(sorted_tokens, start=4)
         }
         self.token_to_index[UNK] = UNK_IDX
         self.token_to_index[PAD] = PAD_IDX
