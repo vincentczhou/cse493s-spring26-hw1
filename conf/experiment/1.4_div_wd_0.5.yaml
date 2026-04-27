@@ -1,0 +1,7 @@
+defaults:
+  - 1.3_div_p97_2_493
+  - _self_
+
+training:
+  weight_decay: 0.5
+  save_interval: 999999

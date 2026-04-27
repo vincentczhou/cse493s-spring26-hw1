@@ -1,0 +1,11 @@
+ps: [97, 113]
+operators: ["+", "-", "/"]
+train_frac: 0.4
+val_frac: 0.1
+# This makes the test set equivalent to train_frac=0.5, val_frac=0.0, which is what we used for the 1.1_grok_data dataset
+seed: 42
+output_dir: data/1.25_hyper_val_${train_frac}_${val_frac}_${seed}
+
+hydra:
+  run:
+    dir: outputs/data/${hydra.job.name}/${now:%Y-%m-%d_%H-%M-%S}

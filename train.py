@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import hydra
@@ -9,12 +10,22 @@ from tqdm import tqdm
 import wandb
 
 from model import GPT, GPTConfig
+
 from utils import TextDataset, Tokenizer, load_data
 
+log = logging.getLogger(__name__)
 
-@hydra.main(config_path="conf", version_base=None)
+
+@hydra.main(
+    config_path="conf/experiment", config_name="0.1_sanitycheck", version_base=None
+)
 def train(cfg: DictConfig) -> None:
+    for handler in logging.root.handlers:
+        if not isinstance(handler, logging.FileHandler):
+            handler.setLevel(logging.WARNING)
+
     torch.manual_seed(cfg.general.seed)
+    torch.cuda.manual_seed_all(cfg.general.seed)
 
     wandb.init(
         project=cfg.wandb.project,
@@ -41,6 +52,7 @@ def train(cfg: DictConfig) -> None:
         batch_size=cfg.training.batch_size,
         shuffle=True,
         collate_fn=TextDataset.collate_fn,
+        generator=torch.Generator().manual_seed(cfg.general.seed),
     )
     val_loader = torch.utils.data.DataLoader(
         val_ds,
@@ -60,8 +72,10 @@ def train(cfg: DictConfig) -> None:
 
     # Training loop
     step = 0
+    train_loss, train_acc, val_loss, val_acc = None, None, None, None
+    done = False
     pbar = tqdm(total=cfg.training.max_steps, desc="training")
-    while step < cfg.training.max_steps:
+    while step < cfg.training.max_steps and not done:
         for x, y in train_loader:
             if step >= cfg.training.max_steps:
                 break
@@ -78,20 +92,27 @@ def train(cfg: DictConfig) -> None:
             step += 1
             pbar.update(1)
 
-            if step % cfg.training.log_interval == 0:
-                preds = logits.argmax(dim=-1)
-                mask = y != -100
-                train_acc = (preds[mask] == y[mask]).float().mean().item()
-                pbar.set_postfix(
-                    {"loss": f"{loss.item():.4f}", "acc": f"{train_acc:.4f}"}
-                )
-                # Reporting train/loss and train/acc per STEP, not per epoch
-                wandb.log(
-                    {"train/loss": loss.item(), "train/acc": train_acc}, step=step
-                )
             if step % cfg.training.eval_interval == 0:
                 model.eval()
                 with torch.no_grad():
+                    train_loss = 0.0
+                    train_correct = 0
+                    train_total = 0
+                    for tx, ty in train_loader:
+                        tx, ty = tx.to(cfg.general.device), ty.to(cfg.general.device)
+                        tlogits = model(tx)
+                        train_loss += F.cross_entropy(
+                            tlogits.view(-1, gptconfig.vocab_size),
+                            ty.view(-1),
+                            ignore_index=-100,
+                        ).item()
+                        tpreds = tlogits.argmax(dim=-1)
+                        tmask = ty != -100
+                        train_correct += (tpreds[tmask] == ty[tmask]).sum().item()
+                        train_total += tmask.sum().item()
+                    train_loss = train_loss / len(train_loader)
+                    train_acc = train_correct / train_total
+
                     val_loss = 0.0
                     val_correct = 0
                     val_total = 0
@@ -103,15 +124,36 @@ def train(cfg: DictConfig) -> None:
                             vy.view(-1),
                             ignore_index=-100,
                         ).item()
-
                         vpreds = vlogits.argmax(dim=-1)
                         vmask = vy != -100
                         val_correct += (vpreds[vmask] == vy[vmask]).sum().item()
                         val_total += vmask.sum().item()
                     val_loss = val_loss / len(val_loader)
                     val_acc = val_correct / val_total
-                # Reporting val/loss and val/acc per val epoch, not per step
-                wandb.log({"val/loss": val_loss, "val/acc": val_acc}, step=step)
+
+                pbar.set_postfix(
+                    {
+                        "loss": train_loss,
+                        "acc": train_acc,
+                        "v_loss": val_loss,
+                        "v_acc": val_acc,
+                    }
+                )
+                wandb.log(
+                    {
+                        "train/loss": train_loss,
+                        "train/acc": train_acc,
+                        "val/loss": val_loss,
+                        "val/acc": val_acc,
+                    },
+                    step=step,
+                )
+                log.info(
+                    f"step {step} | train/loss {train_loss:.4f} | train/acc {train_acc:.4f} | val/loss {val_loss:.4f} | val/acc {val_acc:.4f}"
+                )
+                # if val_acc >= 1.0:
+                #     done = True
+                #     break
 
             if step % cfg.training.save_interval == 0:
                 ckpt_dir = Path(HydraConfig.get().runtime.output_dir) / "checkpoints"

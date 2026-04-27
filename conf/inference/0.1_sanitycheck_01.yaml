@@ -1,0 +1,10 @@
+general:
+  name: ${hydra:job.config_name}
+  device: cpu
+
+hydra:
+  run:
+    dir: outputs/inference/${general.name}/${now:%Y-%m-%d_%H-%M-%S}
+
+checkpoint_dir: outputs/experiment/0.1_sanitycheck_01/2026-04-25_17-23-46/checkpoints
+input_file: data/sanitycheck_noanswer.txt

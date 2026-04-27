@@ -1,11 +1,11 @@
 general:
-  name: sanity_check
+  name: ${hydra:job.config_name}
   device: cuda # or cpu
   seed: 493
 
 hydra:
   run:
-    dir: outputs/${general.name}/${now:%Y-%m-%d_%H-%M-%S}
+    dir: outputs/experiment/${general.name}/${now:%Y-%m-%d_%H-%M-%S}
 
 data:
   train_data_path: data/sanitycheck.txt
@@ -13,10 +13,9 @@ data:
 
 training:
   batch_size: 1
-  max_steps: 2000
-  last_token_only: false
-  log_interval: 100
-  eval_interval: 100
+  max_steps: 150
+  last_token_only: true
+  eval_interval: 1
   save_interval: 500
   lr: 3e-4
   weight_decay: 0.1
