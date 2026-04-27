@@ -24,12 +24,26 @@ def generate(p: int, operator: str) -> list[str]:
     return data
 
 
-def split_and_save(data: list[str], output_dir: Path, name: str, train_frac: float):
-    train_size = int(len(data) * train_frac)
-    train, test = data[:train_size], data[train_size:]
+def split_and_save(
+    data: list[str],
+    output_dir: Path,
+    name: str,
+    train_frac: float,
+    val_frac: float = 0.0,
+):
+    n = len(data)
+    train_size = int(n * train_frac)
+    val_size = int(n * val_frac)
+    train = data[:train_size]
+    val = data[train_size : train_size + val_size]
+    test = data[train_size + val_size :]
     (output_dir / f"{name}_train.txt").write_text("\n".join(train))
     (output_dir / f"{name}_test.txt").write_text("\n".join(test))
-    print(f"{name}: {len(train)} train, {len(test)} test")
+    msg = f"{name}: {len(train)} train, {len(test)} test"
+    if val_frac > 0:
+        (output_dir / f"{name}_val.txt").write_text("\n".join(val))
+        msg = f"{name}: {len(train)} train, {len(val)} val, {len(test)} test"
+    print(msg)
 
 
 @hydra.main(config_path="conf/data", config_name="1.1_generate_data", version_base=None)
@@ -43,7 +57,13 @@ def main(cfg: DictConfig):
     for p, op in tqdm(combos, desc="generating"):
         data = generate(p, op)
         random.shuffle(data)
-        split_and_save(data, output_dir, f"{op_names[op]}_p{p}", cfg.train_frac)
+        split_and_save(
+            data,
+            output_dir,
+            f"{op_names[op]}_p{p}",
+            cfg.train_frac,
+            cfg.get("val_frac", 0.0),
+        )
 
 
 if __name__ == "__main__":
