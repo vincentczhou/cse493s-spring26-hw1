@@ -9,6 +9,10 @@ You may import from other files in your repo. You may add helper functions.
 Just make sure the three functions below work as specified.
 """
 
+import torch
+from inference import generate_next_token, load_checkpoint
+from utils import BOS
+
 
 def load_model_and_tokenizer(checkpoint_dir: str):
     """
@@ -24,14 +28,15 @@ def load_model_and_tokenizer(checkpoint_dir: str):
         whatever object your predict_answer / generate_sanity_check functions
         expect — we do not constrain its type.
     """
-    raise NotImplementedError
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    return load_checkpoint(checkpoint_dir, device)
 
 
 def get_bos_token(tokenizer=None):
     """
     Get the BOS token for the tokenizer, for part 0 of the assignment.
     """
-    raise NotImplementedError
+    return BOS
 
 
 def predict_answer(model, tokenizer, a: int, b: int, op: str, p: int) -> int:
@@ -51,4 +56,6 @@ def predict_answer(model, tokenizer, a: int, b: int, op: str, p: int) -> int:
         You are responsible for formatting the input according to your
         training scheme and parsing the model's output back to an integer.
     """
-    raise NotImplementedError
+    input_str = f"{a} {op} {b} ="
+    predicted = generate_next_token(model, tokenizer, input_str)
+    return int(predicted.strip())
