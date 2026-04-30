@@ -226,6 +226,18 @@ def count_tokens(text):
     return len(tokenizer.encode(text, add_special_tokens=False))
 
 
+def count_generated_tokens(model_output):
+    """Count only generated tokens (thinking + answer), excluding the prompt prefix.
+
+    `generate_fixed_budget_batched` returns prompt + generation, so naively counting
+    every token over-counts. The thinking block always starts with <think>, so we
+    count from there. Falls back to the whole string when there is no <think>.
+    """
+    if "<think>" in model_output:
+        return count_tokens(model_output[model_output.rfind("<think>") :])
+    return count_tokens(model_output)
+
+
 def get_records(dataset, model_outputs, verbose=True):
     records = []
 
@@ -470,7 +482,7 @@ for budget in thinking_budgets:
 # %%
 # This cell is the optimized version for 2.2 sequential which uses batched prompts.
 
-thinking_budgets = [32000]
+thinking_budgets = [1024, 2000, 4000, 8000, 16000, 32000]
 
 for budget in thinking_budgets:
     model_outputs = generate_fixed_budget_batched(
@@ -494,7 +506,9 @@ for thinking_tokens in sequential_thinking_tokens_list:
     results_df = pd.read_csv(f"results_df_sequential_{thinking_tokens}.csv")
     sequential_accs["exact"].append(results_df["exact_correct"].mean())
     sequential_accs["flexible"].append(results_df["flexible_correct"].mean())
-    sequential_avg_tokens.append(results_df["model_output"].apply(count_tokens).mean())
+    sequential_avg_tokens.append(
+        results_df["model_output"].apply(count_generated_tokens).mean()
+    )
 
 # %%
 parallel_budget = 4000
@@ -565,7 +579,28 @@ def best_of_m(correct_list):
 # %%
 # Compute parallel results
 
+import ast
+
 combined_results_df = pd.read_csv("results_df_parallel_combined.csv")
+
+
+# After CSV roundtrip, the tuple-valued columns are stored as strings — parse them back.
+def _parse_csv_tuple(s):
+    if not isinstance(s, str):
+        return s
+    return list(ast.literal_eval(s.replace("nan", "None")))
+
+
+for col in [
+    "model_output_list",
+    "exact_extracted_list",
+    "flexible_extracted_list",
+    "exact_correct_list",
+    "flexible_correct_list",
+    "thinking_tokens_list",
+]:
+    combined_results_df[col] = combined_results_df[col].apply(_parse_csv_tuple)
+
 m_vals = [1, 2, 4, 8]
 parallel_thinking_tokens_list = [m_val * parallel_budget for m_val in m_vals]
 
@@ -586,10 +621,8 @@ for m_val in m_vals:
 
     for _, row in combined_results_df.iterrows():
         gold_answer = row["gold_answer"]
-        print("gold_answer: ", gold_answer)
 
         # Get first m completions
-        print(type(row["exact_extracted_list"][:m_val]))
         exact_extracted_list = row["exact_extracted_list"][:m_val]
         flexible_extracted_list = row["flexible_extracted_list"][:m_val]
         exact_correct_list = row["exact_correct_list"][:m_val]
@@ -604,8 +637,6 @@ for m_val in m_vals:
         flexible_majority_correct.append(
             True if flexible_mv is not None and flexible_mv == gold_answer else False
         )
-        print("exact_mv: ", exact_mv)
-        print("flexible_mv: ", flexible_mv)
 
         # Best of m
         exact_best_correct.append(best_of_m(exact_correct_list))
@@ -615,7 +646,12 @@ for m_val in m_vals:
     parallel_accs["flexible_majority"].append(np.mean(flexible_majority_correct))
     parallel_accs["exact_best_of_m"].append(np.mean(exact_best_correct))
     parallel_accs["flexible_best_of_m"].append(np.mean(flexible_best_correct))
-    # parallel_avg_tokens.append(np.mean([count_tokens(model_output) for model_output in combined_results_df["model_output_list"][:m_val]]))
+
+    # Total generated tokens per problem = sum of generated tokens across first m samples
+    per_problem_totals = combined_results_df["model_output_list"].apply(
+        lambda outputs: sum(count_generated_tokens(o) for o in outputs[:m_val])
+    )
+    parallel_avg_tokens.append(per_problem_totals.mean())
 
 # %%
 # Exact scaling plot
