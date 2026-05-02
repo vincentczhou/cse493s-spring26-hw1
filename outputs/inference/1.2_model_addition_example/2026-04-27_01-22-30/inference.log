@@ -1,0 +1,16 @@
+[2026-04-27 01:22:30,366][__main__][INFO] - Starting Inference...
+[2026-04-27 01:22:30,368][__main__][INFO] - 0: (Input) - 73 + 66 = (Output) - 42 (Combined) - 73 + 66 = 42
+[2026-04-27 01:22:30,368][__main__][INFO] - 1: (Input) - 18 + 62 = (Output) - 80 (Combined) - 18 + 62 = 80
+[2026-04-27 01:22:30,368][__main__][INFO] - 2: (Input) - 92 + 19 = (Output) - 14 (Combined) - 92 + 19 = 14
+[2026-04-27 01:22:30,369][__main__][INFO] - 3: (Input) - 79 + 94 = (Output) - 76 (Combined) - 79 + 94 = 76
+[2026-04-27 01:22:30,369][__main__][INFO] - 4: (Input) - 28 + 48 = (Output) - 76 (Combined) - 28 + 48 = 76
+[2026-04-27 01:22:30,369][__main__][INFO] - 5: (Input) - 38 + 13 = (Output) - 51 (Combined) - 38 + 13 = 51
+[2026-04-27 01:22:30,369][__main__][INFO] - 6: (Input) - 65 + 5 = (Output) - 70 (Combined) - 65 + 5 = 70
+[2026-04-27 01:22:30,370][__main__][INFO] - 7: (Input) - 47 + 0 = (Output) - 47 (Combined) - 47 + 0 = 47
+[2026-04-27 01:22:30,370][__main__][INFO] - 8: (Input) - 42 + 48 = (Output) - 90 (Combined) - 42 + 48 = 90
+[2026-04-27 01:22:30,370][__main__][INFO] - 9: (Input) - 66 + 48 = (Output) - 17 (Combined) - 66 + 48 = 17
+[2026-04-27 01:22:30,370][__main__][INFO] - 10: (Input) - 72 + 27 = (Output) - 2 (Combined) - 72 + 27 = 2
+[2026-04-27 01:22:30,370][__main__][INFO] - 11: (Input) - 0 + 1 = (Output) - 1 (Combined) - 0 + 1 = 1
+[2026-04-27 01:22:30,371][__main__][INFO] - 12: (Input) - 45 + 88 = (Output) - 36 (Combined) - 45 + 88 = 36
+[2026-04-27 01:22:30,371][__main__][INFO] - 13: (Input) - 85 + 64 = (Output) - 52 (Combined) - 85 + 64 = 52
+[2026-04-27 01:22:30,372][__main__][INFO] - 14: (Input) - 2 + 97 = (Output) - 2 (Combined) - 2 + 97 = 2

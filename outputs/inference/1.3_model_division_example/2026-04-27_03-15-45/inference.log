@@ -1,0 +1,16 @@
+[2026-04-27 03:15:45,621][__main__][INFO] - Starting Inference...
+[2026-04-27 03:15:45,625][__main__][INFO] - 0: (Input) - 8 / 32 = (Output) - 73 (Combined) - 8 / 32 = 73
+[2026-04-27 03:15:45,625][__main__][INFO] - 1: (Input) - 38 / 75 = (Output) - 60 (Combined) - 38 / 75 = 60
+[2026-04-27 03:15:45,626][__main__][INFO] - 2: (Input) - 49 / 12 = (Output) - 93 (Combined) - 49 / 12 = 93
+[2026-04-27 03:15:45,626][__main__][INFO] - 3: (Input) - 61 / 15 = (Output) - 17 (Combined) - 61 / 15 = 17
+[2026-04-27 03:15:45,627][__main__][INFO] - 4: (Input) - 54 / 47 = (Output) - 61 (Combined) - 54 / 47 = 61
+[2026-04-27 03:15:45,627][__main__][INFO] - 5: (Input) - 49 / 1 = (Output) - 49 (Combined) - 49 / 1 = 49
+[2026-04-27 03:15:45,627][__main__][INFO] - 6: (Input) - 69 / 89 = (Output) - 52 (Combined) - 69 / 89 = 52
+[2026-04-27 03:15:45,628][__main__][INFO] - 7: (Input) - 91 / 18 = (Output) - 32 (Combined) - 91 / 18 = 32
+[2026-04-27 03:15:45,628][__main__][INFO] - 8: (Input) - 72 / 6 = (Output) - 12 (Combined) - 72 / 6 = 12
+[2026-04-27 03:15:45,628][__main__][INFO] - 9: (Input) - 34 / 58 = (Output) - 24 (Combined) - 34 / 58 = 24
+[2026-04-27 03:15:45,629][__main__][INFO] - 10: (Input) - 81 / 21 = (Output) - 87 (Combined) - 81 / 21 = 87
+[2026-04-27 03:15:45,629][__main__][INFO] - 11: (Input) - 63 / 27 = (Output) - 67 (Combined) - 63 / 27 = 67
+[2026-04-27 03:15:45,629][__main__][INFO] - 12: (Input) - 78 / 43 = (Output) - 74 (Combined) - 78 / 43 = 74
+[2026-04-27 03:15:45,630][__main__][INFO] - 13: (Input) - 73 / 80 = (Output) - 87 (Combined) - 73 / 80 = 87
+[2026-04-27 03:15:45,630][__main__][INFO] - 14: (Input) - 56 / 14 = (Output) - 4 (Combined) - 56 / 14 = 4

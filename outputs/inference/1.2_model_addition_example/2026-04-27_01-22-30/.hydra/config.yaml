@@ -1,0 +1,5 @@
+general:
+  name: ${hydra:job.config_name}
+  device: cpu
+checkpoint_dir: outputs/experiment/1.2_add_p97_1_1337.yaml/2026-04-27_00-28-11/checkpoints
+input_file: data/1.2_add_p97_test_noanswer.txt
