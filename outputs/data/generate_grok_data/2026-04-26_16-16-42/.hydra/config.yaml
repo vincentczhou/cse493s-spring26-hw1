@@ -1,0 +1,10 @@
+ps:
+- 97
+- 113
+operators:
+- +
+- '-'
+- /
+train_frac: 0.4
+seed: 42
+output_dir: data/1.1_grok_data_${train_frac}_${seed}

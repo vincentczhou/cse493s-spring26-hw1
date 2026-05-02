@@ -1,0 +1,11 @@
+ps:
+- 97
+- 113
+operators:
+- +
+- '-'
+- /
+train_frac: 0.4
+val_frac: 0.1
+seed: 42
+output_dir: data/1.25_hyper_val_${train_frac}_${val_frac}_${seed}
